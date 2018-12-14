@@ -8,8 +8,9 @@ pub use telegram_bot_fork_raw::{
     CanGetChatAdministrators, CanGetChatMemberForChat, CanGetChatMemberForUser,
     CanGetChatMembersCount, CanGetFile, CanGetUserProfilePhotos, CanKickChatMemberForChat,
     CanKickChatMemberForUser, CanLeaveChat, CanPinMessage, CanReplySendAudio, CanReplySendContact,
-    CanReplySendLocation, CanReplySendMessage, CanReplySendVenue, CanSendAudio, CanSendChatAction,
-    CanSendContact, CanSendLocation, CanSendMessage, CanSendVenue, CanStopMessageLiveLocation,
-    CanUnbanChatMemberForChat, CanUnbanChatMemberForUser, CanUnpinMessage, ToReplyRequest,
-    ToRequest, ExportChatInviteLink, CanExportChatInviteLink,
+    CanReplySendDocument, CanReplySendLocation, CanReplySendMessage, CanReplySendVenue,
+    CanSendAudio, CanSendChatAction, CanSendContact, CanSendDocument, CanSendLocation,
+    CanSendMessage, CanSendVenue, CanStopMessageLiveLocation, CanUnbanChatMemberForChat,
+    CanUnbanChatMemberForUser, CanUnpinMessage, ToReplyRequest, ToRequest, ExportChatInviteLink,
+    CanExportChatInviteLink,
 };
