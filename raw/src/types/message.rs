@@ -228,7 +228,7 @@ impl Message {
             &raw.forward_from_chat,
             raw.forward_from_message_id,
         ) {
-            (None, &None, &None, None) => None,
+            (None, &None, &None, _) => None,
             (Some(date), from, &None, None) => Some(Forward {
                 date,
                 from: ForwardFrom::User { user: from.clone() },
@@ -360,7 +360,7 @@ impl ChannelPost {
             &raw.forward_from_chat,
             raw.forward_from_message_id,
         ) {
-            (None, &None, &None, None) => None,
+            (None, &None, &None, _) => None,
             (Some(date), from, &None, None) => Some(Forward {
                 date,
                 from: ForwardFrom::User { user: from.clone() },
