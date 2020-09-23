@@ -15,6 +15,8 @@ Rust Telegram Bot Library
 
 A library for writing your own [Telegram](https://telegram.org/) bots. More information [here](https://core.telegram.org/bots). Official API [here](https://core.telegram.org/bots/api).
 
+**WARNING**: This fork is now obsolete, please use the original library repository [here](https://github.com/telegram-rs/telegram-bot).
+
 ## Example
 Here is a simple example (see [`example/simple.rs`](https://github.com/Emulator000/telegram-bot/blob/master/lib/examples/simple.rs)):
 
