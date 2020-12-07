@@ -1,16 +1,19 @@
+use failure;
+use std::result;
 use types::*;
 
-error_chain! {
-    foreign_links {
-        Json(::serde_json::Error);
-    }
+pub type Result<T, E = failure::Error> = result::Result<T, E>;
 
-    errors {
-        EmptyBody
-        TelegramError {
-            description: String,
-            parameters: Option<ResponseParameters>
-        }
-        DetachedError(err: String)
-    }
+#[derive(Debug, Fail)]
+#[fail(description = "telegram-bot-raw error")]
+pub enum Error {
+    #[fail(display = "empty body")]
+    EmptyBody,
+    #[fail(display = "telegram error: {}", description)]
+    TelegramError {
+        description: String,
+        parameters: Option<ResponseParameters>,
+    },
+    #[fail(display = "detached error: {}", _0)]
+    DetachedError(String),
 }

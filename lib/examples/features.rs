@@ -3,17 +3,15 @@ extern crate telegram_bot_fork;
 extern crate tokio;
 extern crate tokio_timer;
 
+use futures::{future::lazy, Future, Stream};
 use std::{
     env,
     ops::Add,
     time::{Duration, Instant},
 };
-
-use futures::{future::lazy, Future, Stream};
-
-use tokio_timer::Delay;
-
 use telegram_bot_fork::*;
+use tokio::runtime::current_thread::{self, Runtime};
+use tokio_timer::Delay;
 
 fn test_message(api: Api, message: Message) {
     let simple = api.send(message.text_reply("Simple message"));
@@ -30,7 +28,7 @@ fn test_message(api: Api, message: Message) {
             .parse_mode(ParseMode::Html),
     );
 
-    tokio::executor::current_thread::spawn({
+    current_thread::spawn({
         let future = simple.and_then(|_| markdown).and_then(|_| html);
 
         future.map_err(|_| ()).map(|_| ())
@@ -46,7 +44,7 @@ fn test_preview(api: Api, message: Message) {
             .disable_preview(),
     );
 
-    tokio::executor::current_thread::spawn({
+    current_thread::spawn({
         let future = preview.and_then(|_| no_preview);
 
         future.map_err(|_| ()).map(|_| ())
@@ -59,7 +57,7 @@ fn test_reply(api: Api, message: Message) {
 
     let private = api.send(message.from.text("Private text"));
 
-    tokio::executor::current_thread::spawn({
+    current_thread::spawn({
         let future = msg.and_then(|_| chat).and_then(|_| private);
 
         future.map_err(|_| ()).map(|_| ())
@@ -95,14 +93,14 @@ fn test_edit_message(api: Api, message: Message) {
             Ok(())
         });
 
-    tokio::executor::current_thread::spawn(round_3)
+    current_thread::spawn(round_3)
 }
 
 fn test_get_chat(api: Api, message: Message) {
     let chat = api.send(message.chat.get_chat());
     let future = chat.and_then(move |chat| api.send(chat.text(format!("Chat id {}", chat.id()))));
 
-    tokio::executor::current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
+    current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
 }
 
 fn test_get_chat_administrators(api: Api, message: Message) {
@@ -115,7 +113,7 @@ fn test_get_chat_administrators(api: Api, message: Message) {
         api.send(message.text_reply(format!("Administrators: {}", response.join(", "))))
     });
 
-    tokio::executor::current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
+    current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
 }
 
 fn test_get_chat_members_count(api: Api, message: Message) {
@@ -123,7 +121,7 @@ fn test_get_chat_members_count(api: Api, message: Message) {
     let future = count
         .and_then(move |count| api.send(message.text_reply(format!("Members count: {}", count))));
 
-    tokio::executor::current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
+    current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
 }
 
 fn test_get_chat_member(api: Api, message: Message) {
@@ -134,7 +132,7 @@ fn test_get_chat_member(api: Api, message: Message) {
         api.send(message.text_reply(format!("Member {}, status {:?}", first_name, status)))
     });
 
-    tokio::executor::current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
+    current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
 }
 
 fn test_get_user_profile_photos(api: Api, message: Message) {
@@ -144,7 +142,7 @@ fn test_get_user_profile_photos(api: Api, message: Message) {
         api.send(message.text_reply(format!("Found photos: {}", photos.total_count)))
     });
 
-    tokio::executor::current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
+    current_thread::spawn({ future.map_err(|_| ()).map(|_| ()) })
 }
 
 fn test_leave(api: Api, message: Message) {
@@ -174,14 +172,14 @@ fn test(api: Api, message: Message) {
 }
 
 fn main() {
-    tokio::runtime::current_thread::Runtime::new()
-        .unwrap()
+    let mut runtime = Runtime::new().unwrap();
+    runtime
         .block_on(lazy(|| {
             let token = env::var("TELEGRAM_BOT_TOKEN").unwrap();
             let api = Api::new(token).unwrap();
 
             let stream = api.stream().then(|mb_update| {
-                let res: Result<Result<Update, Error>, ()> = Ok(mb_update);
+                let res: Result<_, ()> = Ok(mb_update);
                 res
             });
 

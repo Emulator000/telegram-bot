@@ -2,8 +2,7 @@
 //! See [readme](https://github.com/telegram-rs/telegram-bot) for details.
 
 extern crate antidote;
-#[macro_use]
-extern crate error_chain;
+extern crate failure;
 extern crate futures;
 extern crate http;
 extern crate telegram_bot_fork_raw;
@@ -27,7 +26,7 @@ pub mod types;
 
 pub use self::{
     api::Api,
-    errors::{Error, ErrorKind},
+    errors::{Error, Result},
     future::*,
 };
 pub use connector::*;

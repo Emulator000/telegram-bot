@@ -14,7 +14,7 @@ license = "MIT"
 antidote = "^1.0"
 tokio = "^0.1"
 tokio-timer = "^0.2"
-error-chain = "^0.11"
+failure = "^0.1"
 futures = "^0.1"
 http = "^0.1"
 telegram-bot-fork-raw = { version = "=0.7.8", path = "../raw" }

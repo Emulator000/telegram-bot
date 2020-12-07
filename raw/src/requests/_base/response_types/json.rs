@@ -39,7 +39,7 @@ where
 {
     type Type = <Resp as JsonResponse>::Type;
 
-    fn deserialize(resp: HttpResponse) -> Result<Self::Type, Error> {
+    fn deserialize(resp: HttpResponse) -> Result<Self::Type> {
         if let Some(body) = resp.body.as_ref() {
             let raw = serde_json::from_slice(body)?;
             match raw {
@@ -47,14 +47,13 @@ where
                 ResponseWrapper::Error {
                     description,
                     parameters,
-                } => Err(ErrorKind::TelegramError {
+                } => Err(Error::TelegramError {
                     description,
                     parameters,
-                }
-                .into()),
+                })?,
             }
         } else {
-            Err(ErrorKind::EmptyBody.into())
+            Err(Error::EmptyBody)?
         }
     }
 }

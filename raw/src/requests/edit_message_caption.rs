@@ -18,7 +18,7 @@ impl<'s> Request for EditMessageCaption<'s> {
     type Type = JsonRequestType<Self>;
     type Response = JsonIdResponse<Message>;
 
-    fn serialize(&self) -> Result<HttpRequest, Error> {
+    fn serialize(&self) -> Result<HttpRequest> {
         Self::Type::serialize(RequestUrl::method("editMessageCaption"), self)
     }
 }

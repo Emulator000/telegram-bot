@@ -14,7 +14,7 @@ impl Request for ExportChatInviteLink {
     type Type = JsonRequestType<Self>;
     type Response = JsonIdResponse<String>;
 
-    fn serialize(&self) -> Result<HttpRequest, Error> {
+    fn serialize(&self) -> Result<HttpRequest> {
         Self::Type::serialize(RequestUrl::method("exportChatInviteLink"), self)
     }
 }

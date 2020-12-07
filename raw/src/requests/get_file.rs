@@ -13,7 +13,7 @@ impl<'s> Request for GetFile {
     type Type = JsonRequestType<Self>;
     type Response = JsonIdResponse<File>;
 
-    fn serialize(&self) -> Result<HttpRequest, Error> {
+    fn serialize(&self) -> Result<HttpRequest> {
         Self::Type::serialize(RequestUrl::method("getFile"), self)
     }
 }

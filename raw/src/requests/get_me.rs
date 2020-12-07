@@ -11,7 +11,7 @@ impl Request for GetMe {
     type Type = JsonRequestType<Self>;
     type Response = JsonIdResponse<User>;
 
-    fn serialize(&self) -> Result<HttpRequest, Error> {
+    fn serialize(&self) -> Result<HttpRequest> {
         Self::Type::serialize(RequestUrl::method("getMe"), self)
     }
 }

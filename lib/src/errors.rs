@@ -1,14 +1,5 @@
-use telegram_bot_fork_raw;
+use std::result;
 
-error_chain! {
-    foreign_links {
-        Url(::http::uri::InvalidUri) #[cfg(feature = "hyper_connector")];
-        Hyper(::hyper::Error) #[cfg(feature = "hyper_connector")];
-        Io(::std::io::Error);
-        Tokio(::tokio_timer::Error);
-    }
+pub use failure::Error;
 
-    links {
-        Raw(telegram_bot_fork_raw::Error, telegram_bot_fork_raw::ErrorKind);
-    }
-}
+pub type Result<T, E = Error> = result::Result<T, E>;

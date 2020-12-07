@@ -14,7 +14,7 @@ use telegram_bot_fork_raw::{
     Body as TelegramBody, HttpRequest, HttpResponse, Method as TelegramMethod,
 };
 
-use errors::Error;
+use errors::Result;
 use future::{NewTelegramFuture, TelegramFuture};
 
 use super::_base::Connector;
@@ -73,13 +73,13 @@ impl<C: Connect + 'static> Connector for HyperConnector<C> {
         });
 
         let future = request.and_then(move |response| {
-            response.into_body().from_err().fold(
-                vec![],
-                |mut result, chunk| -> Result<Vec<u8>, Error> {
+            response
+                .into_body()
+                .from_err()
+                .fold(vec![], |mut result, chunk| -> Result<Vec<u8>> {
                     result.extend_from_slice(&chunk);
                     Ok(result)
-                },
-            )
+                })
         });
 
         let future = future.and_then(|body| Ok(HttpResponse { body: Some(body) }));
@@ -89,7 +89,7 @@ impl<C: Connect + 'static> Connector for HyperConnector<C> {
 }
 
 /// Returns default hyper connector. Uses one resolve thread and `HttpsConnector`.
-pub fn default_connector() -> Result<Box<Connector>, Error> {
+pub fn default_connector() -> Result<Box<Connector>> {
     let connector = HttpsConnector::new(1).map_err(|err| {
         ::std::io::Error::new(::std::io::ErrorKind::Other, format!("tls error: {}", err))
     })?;

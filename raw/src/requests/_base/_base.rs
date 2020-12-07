@@ -5,20 +5,20 @@ pub trait RequestType {
     type Options;
     type Request;
 
-    fn serialize(options: Self::Options, request: &Self::Request) -> Result<HttpRequest, Error>;
+    fn serialize(options: Self::Options, request: &Self::Request) -> Result<HttpRequest>;
 }
 
 pub trait ResponseType {
     type Type;
 
-    fn deserialize(resp: HttpResponse) -> Result<Self::Type, Error>;
+    fn deserialize(resp: HttpResponse) -> Result<Self::Type>;
 }
 
 pub trait Request {
     type Type: RequestType;
     type Response: ResponseType + 'static;
 
-    fn serialize(&self) -> Result<HttpRequest, Error>;
+    fn serialize(&self) -> Result<HttpRequest>;
 
     fn detach(&self) -> DetachedRequest<Self::Response> {
         DetachedRequest {
@@ -32,7 +32,7 @@ impl<'a, Req: Request> Request for &'a Req {
     type Type = Req::Type;
     type Response = Req::Response;
 
-    fn serialize(&self) -> Result<HttpRequest, Error> {
+    fn serialize(&self) -> Result<HttpRequest> {
         (*self).serialize()
     }
 }
@@ -41,13 +41,13 @@ impl<'a, Req: Request> Request for &'a mut Req {
     type Type = Req::Type;
     type Response = Req::Response;
 
-    fn serialize(&self) -> Result<HttpRequest, Error> {
+    fn serialize(&self) -> Result<HttpRequest> {
         (**self).serialize()
     }
 }
 
 pub struct DetachedRequest<Resp> {
-    http_request: Result<HttpRequest, Error>,
+    http_request: Result<HttpRequest>,
     phantom: ::std::marker::PhantomData<Resp>,
 }
 
@@ -55,7 +55,7 @@ impl<Resp: ResponseType + 'static> Request for DetachedRequest<Resp> {
     type Type = DetachedRequestType;
     type Response = Resp;
 
-    fn serialize(&self) -> Result<HttpRequest, Error> {
+    fn serialize(&self) -> Result<HttpRequest> {
         Ok(Self::Type::serialize((), &self.http_request)?)
     }
 }

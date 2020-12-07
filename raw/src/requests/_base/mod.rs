@@ -2,7 +2,7 @@ mod _base;
 pub use self::_base::*;
 
 mod errors;
-pub use self::errors::{Error, ErrorKind};
+pub use self::errors::{Error, Result};
 
 mod http;
 pub use self::http::{Body, HttpRequest, HttpResponse, Method, RequestUrl};

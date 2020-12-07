@@ -24,7 +24,7 @@ impl Request for SendLocation {
     type Type = JsonRequestType<Self>;
     type Response = JsonIdResponse<Message>;
 
-    fn serialize(&self) -> Result<HttpRequest, Error> {
+    fn serialize(&self) -> Result<HttpRequest> {
         Self::Type::serialize(RequestUrl::method("sendLocation"), self)
     }
 }
